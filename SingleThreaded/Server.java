@@ -61,11 +61,12 @@ public class Server {
             // The second argument 'true' enables auto-flush on newline which is
             // convenient for simple line-oriented protocols.
             PrintWriter toClient = new PrintWriter(acceptedConnection.getOutputStream(), true);
-
             // Create a BufferedReader to read text data from the client.
             // In this minimal example we do not actually read from the client,
             // but this is how you would wrap the input stream for line-based IO.
             BufferedReader fromClient = new BufferedReader(new InputStreamReader(acceptedConnection.getInputStream()));
+            String clientMessage = fromClient.readLine();
+            System.out.println("Client says: "+clientMessage);
             // Send a simple greeting to the connected client.
             toClient.println("Hello world from server!");
             fromClient.close();
