@@ -38,26 +38,22 @@ public class Server {
     public void run() throws IOException, UnknownHostException{
         // The port this server will listen on.
         int port = 8010;
-
         // Create a ServerSocket bound to the specified port.
         // This will listen for incoming TCP connection requests.
         ServerSocket socket = new ServerSocket(port);
-
         // Configure a timeout (in milliseconds) for accept().
         // If no connection is received within this timeout, accept() will throw
         // a SocketTimeoutException. Here it's set to 20 seconds (20000 ms).
         socket.setSoTimeout(20000);
-
         // Main server loop: continually accept and handle connections.
         // NOTE: This implementation is single-threaded and only demonstrates the
         // basics of accepting a connection and sending a response.
         while (true) {
+            try{
             System.out.println("Server is listing on port:"+port);
-
             // Wait for a client to connect. This blocks until a connection is
             // made or the socket times out (see setSoTimeout above).
             Socket acceptedConnection = socket.accept();
-
             // Log the remote client's address for debugging.
             System.out.println("Connected to:" +acceptedConnection.getRemoteSocketAddress());
 
@@ -70,15 +66,14 @@ public class Server {
             // In this minimal example we do not actually read from the client,
             // but this is how you would wrap the input stream for line-based IO.
             BufferedReader fromClient = new BufferedReader(new InputStreamReader(acceptedConnection.getInputStream()));
-
             // Send a simple greeting to the connected client.
             toClient.println("Hello world from server!");
-
-            // IMPORTANT: In this simple example we do not close the streams or
-            // the accepted socket. That leads to resource leaks. In a real
-            // server you should close 'fromClient', 'toClient' and
-            // 'acceptedConnection' when finished (e.g., in a finally block or
-            // using try-with-resources), and handle client requests properly.
+            fromClient.close();
+            toClient.close();
+            acceptedConnection.close();
+            }catch(Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
